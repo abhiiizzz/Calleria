@@ -5,6 +5,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import NavBar from "@/components/layout/NavBar";
 import Container from "@/components/layout/Container";
 import SocketProvider from "@/providers/SocketProvider";
+import { cn } from "@/lib/utils";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,7 +31,12 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          className={cn(
+            geistSans.variable,
+            geistMono.variable,
+            "antialiased",
+            "relative"
+          )}
         >
           <SocketProvider>
             <main className="flex flex-col min-h-screen bg-secondary">

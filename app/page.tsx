@@ -1,5 +1,11 @@
-
+import CallNotification from "@/components/CallNotification";
+import ListOnlineUsers from "@/components/ListOnlineUsers";
 
 export default function Home() {
-  return <div>Calleria</div>;
+  return (
+    <div>
+      <ListOnlineUsers />
+      <CallNotification />
+    </div>
+  );
 }
