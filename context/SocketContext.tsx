@@ -17,6 +17,7 @@ interface iSocketContext {
   ongoingCall: OngoingCall | null;
   localStream: MediaStream | null;
   handleCall: (user: SocketUser) => void;
+  handleJoinCall: (ongoingCall: OngoingCall) => void;
 }
 export const SocketContext = createContext<iSocketContext | null>(null);
 
@@ -98,6 +99,29 @@ export const SocketContextProvider = ({
     [socket, user, ongoingCall]
   );
 
+  const createPeer = useCallback(
+    (stream: MediaStream, initiator: boolean) => {},
+    [ongoingCall]
+  );
+
+  const handleJoinCall = useCallback(
+    async (ongoingCall: OngoingCall) => {
+      setOngoingCall((prev) => {
+        if (prev) {
+          return { ...prev, isRinging: false };
+        }
+        return prev;
+      });
+
+      const stream = await getMediaStream();
+      if (!stream) {
+        console.log("COuld not get the stream in handleJoinCall");
+        return;
+      }
+    },
+    [socket, currentSocketUser]
+  );
+
   useEffect(() => {
     const newSocket = io();
     setSocket(newSocket);
@@ -162,6 +186,7 @@ export const SocketContextProvider = ({
         handleCall,
         ongoingCall,
         localStream,
+        handleJoinCall,
       }}
     >
       {children}
