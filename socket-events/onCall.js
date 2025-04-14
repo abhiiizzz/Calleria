@@ -1,8 +1,10 @@
+// onCall.js
 import { io } from "../server.js";
 
 const onCall = async (participants) => {
-  if (participants.receiver.socketId) {
-    io.to(participants.receiver.socketId).emit("incomingCall", participants);
+  const ongoingCall = { participants, isRinging: true };
+  if (participants?.receiver?.socketId) {
+    io.to(participants.receiver.socketId).emit("incomingCall", ongoingCall);
   }
 };
 
