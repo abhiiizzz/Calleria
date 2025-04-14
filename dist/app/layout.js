@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
@@ -7,38 +6,22 @@ import Container from "@/components/layout/Container";
 import SocketProvider from "@/providers/SocketProvider";
 import { cn } from "@/lib/utils";
 import CallNotification from "@/components/CallNotification";
-
 const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+    variable: "--font-geist-sans",
+    subsets: ["latin"],
 });
-
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+    variable: "--font-geist-mono",
+    subsets: ["latin"],
 });
-
-export const metadata: Metadata = {
-  title: "Calleria",
-  description: "Video Call",
+export const metadata = {
+    title: "Calleria",
+    description: "Video Call",
 };
-
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  return (
-    <ClerkProvider>
+export default function RootLayout({ children, }) {
+    return (<ClerkProvider>
       <html lang="en">
-        <body
-          className={cn(
-            geistSans.variable,
-            geistMono.variable,
-            "antialiased",
-            "relative"
-          )}
-        >
+        <body className={cn(geistSans.variable, geistMono.variable, "antialiased", "relative")}>
           <SocketProvider>
             <main className="flex flex-col min-h-screen bg-secondary">
               <NavBar />
@@ -48,6 +31,5 @@ export default function RootLayout({
           </SocketProvider>
         </body>
       </html>
-    </ClerkProvider>
-  );
+    </ClerkProvider>);
 }

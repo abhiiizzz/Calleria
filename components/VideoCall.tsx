@@ -3,11 +3,11 @@
 import { useSocket } from "@/context/SocketContext";
 import VideoContainer from "./VideoContainer";
 import { useCallback, useEffect, useState } from "react";
-import { Button } from "./ui/button";
 import { MdMic, MdMicOff, MdVideocam, MdVideocamOff } from "react-icons/md";
 
 const VideoCall = () => {
-  const { localStream } = useSocket();
+  const { localStream, peer, ongoingCall, handleHangup, isCallEnded } =
+    useSocket();
   const [isMicOn, setMicOn] = useState(true);
   const [isVidOn, setVidOn] = useState(true);
 
@@ -15,7 +15,6 @@ const VideoCall = () => {
     if (localStream) {
       const videoTrack = localStream.getVideoTracks()[0];
       setVidOn(videoTrack.enabled);
-
       const audioTrack = localStream.getAudioTracks()[0];
       setMicOn(audioTrack.enabled);
     }
@@ -37,14 +36,29 @@ const VideoCall = () => {
     }
   }, [localStream]);
 
+  const isOnCall = localStream && peer && ongoingCall ? true : false;
+
+  if (isCallEnded) {
+    return <div className="mt-5 text-rose-500 text-center">Call Ended</div>;
+  }
+
+  if (!localStream && !peer) return null;
+
   return (
     <div>
-      <div>
+      <div className="mt-4 relative">
         {localStream && (
           <VideoContainer
             stream={localStream}
             isLocalStream={true}
-            isOnCall={false}
+            isOnCall={isOnCall}
+          />
+        )}
+        {peer && peer.remoteStream && (
+          <VideoContainer
+            stream={peer.remoteStream}
+            isLocalStream={false}
+            isOnCall={isOnCall}
           />
         )}
       </div>
@@ -53,20 +67,23 @@ const VideoCall = () => {
         {localStream && (
           <div className="mt-8 flex items-center justify-center">
             <button onClick={toggleMic}>
-              {isMicOn && <MdMicOff size={28} />}
-              {!isMicOn && <MdMic size={28} />}
+              {isMicOn ? <MdMicOff size={28} /> : <MdMic size={28} />}
             </button>
 
             <button
               className="px-4 py-2 bg-rose-500 text-white rounded mx-4"
-              onClick={() => {}}
+              onClick={() =>
+                handleHangup({
+                  ongoingCall: ongoingCall ? ongoingCall : undefined,
+                  isEmitHangup: true,
+                })
+              }
             >
               End Call
             </button>
 
             <button onClick={toggleCamera}>
-              {isVidOn && <MdVideocamOff size={28} />}
-              {!isVidOn && <MdVideocam size={28} />}
+              {isVidOn ? <MdVideocamOff size={28} /> : <MdVideocam size={28} />}
             </button>
           </div>
         )}
